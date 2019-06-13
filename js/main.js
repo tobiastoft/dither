@@ -7,7 +7,7 @@ function $id(id) {
 	return document.getElementById(id);
 }
 
-function init(){    
+function init(){
     //Populate select elements
     var sel = $id("select-filter");
     for (var i=0; i<dither.filters.length; i++){
@@ -16,7 +16,7 @@ function init(){
         option.value = dither.filters[i][1];
         sel.add(option);
     }
-    
+
     //Attach dragging events
     var filedrag = $id("filedrag");
     document.body.addEventListener("dragover", fileDragHover, false);
@@ -26,17 +26,17 @@ function init(){
         $id("imgfile").click()
     }, false);
     filedrag.style.display = "block";
-    
+
     //Attach input element handlers
     $id("grayscale").addEventListener("change", function(e){
         dither.convertToGrayscale = e.target.checked;
         processImage();
     }, false);
-    
+
     $id("imgfile").addEventListener("change", function(e){
         loadImage();
     }, false);
-    
+
     $id("select-filter").addEventListener("change", function(e){
         processImage();
     }, false);
@@ -62,7 +62,7 @@ function loadImage(){
 
 function loadImageFile(files) {
     var fr, img, file;
-    
+
     if (files.length > 0) {
         file = files[0];
         console.dir(file);
@@ -71,33 +71,37 @@ function loadImageFile(files) {
         fr.onload = createImage;
         fr.readAsDataURL(file);
     }
-    
+
     function createImage() {
         img = new Image();
         img.onload = imageLoaded;
         img.src = fr.result;
     }
-    
+
     function imageLoaded() {
-        var canvas = $id("input");
-        var ctx = canvas.getContext("2d");
+        var inCanvas = $id("input");
+        var outCanvas = $id("output");
+        inCanvas.height = outCanvas.height = img.height;
+        inCanvas.width = outCanvas.width = img.width;
+
+        var ctx = inCanvas.getContext("2d");
         ctx.drawImage(img,0,0);
         console.log("Image drawn");
-        
+
         processImage();
     }
 }
 
-function processImage(){    
+function processImage(){
     //Get selected filter function from array
     var sel = $id("select-filter");
     var filter = dither.filters[sel.selectedIndex][1];
-    
+
     //Apply
-    dither.drawDitherResult($id("input"), 
-                            $id("output"), 
+    dither.drawDitherResult($id("input"),
+                            $id("output"),
                             filter);
-    
+
     //Create histograms
     createHistogram("input", "histogram-input");
     createHistogram("output", "histogram-output");
@@ -122,12 +126,12 @@ function createHistogram(srcCanvas, histCanvas){
     //Get a few key numbers
     var max = histogram.maxVals.max(); //scale
     var y = canvas.height; //using canvas height as offset for y-axis
-    
+
     //Set up and clear histogram canvas
     ctx.globalCompositeOperation = "source-over";
     clearCanvas(histCanvas, "#444444");
     ctx.globalCompositeOperation = "screen";
-    
+
     //Draw histogram
     for (var i=0; i<histogram.vals[0].length; i++){
         var height = 0;
@@ -154,12 +158,12 @@ function getHistogramData(canvasId){
                      "avgVals" : [0,0,0],
                      "vals" :[zeroArray256(), zeroArray256(), zeroArray256()]
                     };
-    
+
     //Get image data
     var canvas = $id(canvasId);
     var ctx = canvas.getContext("2d");
     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    
+
     //Loop through each pixel
     for (var i=0; i<imageData.length; i+=4){
         //exclude fully transparent pixels from histogram
@@ -169,12 +173,12 @@ function getHistogramData(canvasId){
             var b = histogram.vals[2][ imageData[i+2] ]++;  //B
         }
     }
-    
+
     //Get max & average
     histogram.maxVals[0] = histogram.vals[0].max();
     histogram.maxVals[1] = histogram.vals[1].max();
     histogram.maxVals[2] = histogram.vals[2].max();
-    
+
     histogram.avgVals[0] = histogram.vals[0].average();
     histogram.avgVals[1] = histogram.vals[1].average();
     histogram.avgVals[2] = histogram.vals[2].average();
@@ -193,11 +197,11 @@ Array.prototype.max = function () {
 };
 
 Array.prototype.average = function () {
-    var sum = 0, j = 0; 
-   for (var i = 0; i < this.length, isFinite(this[i]); i++) { 
-          sum += parseFloat(this[i]); ++j; 
-    } 
-   return j ? sum / j : 0; 
+    var sum = 0, j = 0;
+   for (var i = 0; i < this.length, isFinite(this[i]); i++) {
+          sum += parseFloat(this[i]); ++j;
+    }
+   return j ? sum / j : 0;
 };
 
 /*********************************
@@ -208,7 +212,7 @@ function fileDragHover(e) {
 	e.stopPropagation();
 	e.preventDefault();
 	$id("filedrag").className = (e.type == "dragover" ? "hover" : "");
-    
+
     if (e.type == "dragover"){
         $id("filedrag").className = "hover";
         $id("filedrag").innerHTML = "Drop to load!";
@@ -216,7 +220,7 @@ function fileDragHover(e) {
         $id("filedrag").className = "";
         $id("filedrag").innerHTML = "Drag and drop or click here to load a file";
     }
-    
+
 }
 
 function fileSelectHandler(e) {
