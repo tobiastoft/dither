@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="css/main.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <title>Dithering demo</title>
+  </head>
+  <body>
+    <h1>Dithering demo</h1>
+    <div class="meta">
+        <p>Version 1.0.6</p>
+        <p>July 8, 2015 (Updated September 22, 2015)</p>
+        <p>Tobias Toft</p>
+    </div>
+
+    <hr>
+    
+    <h3>1. Load image file</h3>
+    <input type="file" id="imgfile" />
+    <div id="filedrag">Drag and drop or click here to load a file</div>
+      
+    <h3>2. Select dithering algorithm</h3>
+    <select id="select-filter"></select>
+    <input id="grayscale" name="Grayscale" type="checkbox" value="grayscale" checked />
+    <label for="grayscale">Convert to grayscale</label>    
+
+    <hr>
+    <h2 id="filename">No file loaded</h2>
+    <h3>Input</h3>
+    <canvas id="input" width="1040" height="200"></canvas>
+      
+    <h3>Output</h3>
+    <canvas id="output" width="1040" height="200"></canvas>
+      
+    <div class="tip">Tip: Right click the images to save them to your computer.</div>
+    
+    <h3 style="margin-top:2em;">Histograms</h3>
+    <div class="histograms">
+        <div>
+            <canvas id="histogram-input" width="256" height="200"></canvas>
+            <div>Input</div>
+        </div>
+        <div>
+            <canvas id="histogram-output" width="256" height="200"></canvas>
+            <div>Output</div>
+        </div>
+    </div>
+    
+    <hr>
+    <div class="meta">
+        <p>Polyera Confidential</p>
+    </div>
+      
+    <script src="js/dither.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
